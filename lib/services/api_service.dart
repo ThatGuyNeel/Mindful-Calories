@@ -39,19 +39,16 @@ class ApiService {
   
   // method to search products by name
   Future<List<Product>> searchProductsByName(
-    String query, {
-    String? category,
+    String category, {
+    int pageSize = 10,
   }) async {
-    final uri = Uri.parse('${ApiConstants.baseUrl}/search')
-      ..queryParameters.addAll({
-        'search_terms': query,
-        'fields': 'id,product_name,ingredients_text_en,'
-            'nutriments,image_front_url,food_groups_tags',
-      });
-    
-    if (category != null && category.isNotEmpty) {
-      uri.queryParameters['search_categories'] = category;
-    }
+    final uri = Uri.parse('${ApiConstants.baseUrl}/search?').replace( 
+      queryParameters :{
+        'categories_tags_en': category,
+        'fields': 'product_name,ingredients_text_en,nutriments,image_front_url,food_groups_tags',
+        'page_size': '$pageSize',
+      }
+    );
     
     try {
       final response = await _client.get(uri).timeout(
