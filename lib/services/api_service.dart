@@ -9,16 +9,22 @@ class ApiService {
   // Method to fetch product by barcode
   Future<Product> fetchProductByBarcode(String barcode) async {
     final uri = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.prod}/$barcode');
-    
+
     try {
       final response = await _client.get(uri).timeout(
         const Duration(seconds: 20),
         onTimeout: () => throw TimeoutException('Request timed out'),
       );
-      
+
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonData = json.decode(response.body);
-        return Product.fromJson(jsonData);
+
+        //the response in open food facts api is contained in the product key
+        if (jsonData.containsKey('product')) {
+          return Product.fromJson(jsonData['product']);
+        } else {
+          return Product.fromJson(jsonData);
+        }
       } else if (response.statusCode == 404) {
         throw ApiException('Product not found for barcode: $barcode');
       } else {
