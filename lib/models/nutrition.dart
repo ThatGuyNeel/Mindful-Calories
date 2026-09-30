@@ -1,3 +1,9 @@
+double? _toDouble(dynamic v) {
+  if (v is num) return v.toDouble();
+  if (v is String) return double.tryParse(v);
+  return null; //for null or any unexpected input
+}
+
 class Nutrition  {
   final double? energyKcal100g;
   final double? carbohydrates100g;
@@ -19,10 +25,10 @@ class Nutrition  {
   };
   factory Nutrition.fromJson(Map<String, dynamic> json)  {
     return Nutrition(
-      energyKcal100g: (json['energy-kcal_100g'] as num?)?.toDouble(),
-      carbohydrates100g: (json['carbohydrates_100g'] as num?)?.toDouble(),
-      proteins100g: (json['proteins_100g'] as num?)?.toDouble(),
-      fats100g: (json['fat_100g'] as num?)?.toDouble(),
+      energyKcal100g: _toDouble(json['energy-kcal_100g']),
+      carbohydrates100g: _toDouble(json['carbohydrates_100g']),
+      proteins100g: _toDouble(json['proteins_100g']),
+      fats100g: _toDouble(json['fat_100g']),
     );
   }
 }

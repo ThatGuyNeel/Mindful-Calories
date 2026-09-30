@@ -34,10 +34,13 @@ class Product  {
   factory Product.fromJson(Map<String, dynamic> json) {
     // elements nested in 'product' key
     final productData = json['product'] ?? json;
-
+    final name = productData['product_name'];
+   
     return Product(
       id: productData['id'] ?? '',
-      productName: productData['product_name'] ?? 'Unknown Product',
+       productName: (name is String && name.trim().isNotEmpty)
+        ? name.trim()
+        : 'Unknown Product',
       ingredientsTextEn: productData['ingredients_text_en'],
       foodGroupsTags: List<String>.from(productData['food_groups_tags'] ?? []),
       nutriments: productData['nutriments'] != null
